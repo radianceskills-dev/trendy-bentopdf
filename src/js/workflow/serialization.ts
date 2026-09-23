@@ -11,6 +11,7 @@ import type {
 } from './types';
 import { WORKFLOW_VERSION } from './types';
 import { wfError } from './errors';
+import { replaceWorkflowSafely, isSensitiveControl } from './safe-workflow.js';
 
 type AreaExtra = LitArea2D<ClassicScheme>;
 
@@ -33,7 +34,7 @@ function serializeWorkflow(
 
     const controls: Record<string, unknown> = {};
     for (const [key, control] of Object.entries(node.controls)) {
-      if (control && 'value' in control) {
+      if (control && 'value' in control && !isSensitiveControl(key)) {
         controls[key] = (control as { value: unknown }).value;
       }
     }
@@ -96,6 +97,7 @@ async function deserializeWorkflow(
     }
 
     for (const [key, value] of Object.entries(serializedNode.controls || {})) {
+      if (isSensitiveControl(key)) continue;
       const control = node.controls[key];
       if (control && 'value' in control) {
         (control as { value: unknown }).value = node.sanitizeControlValue(
@@ -135,6 +137,15 @@ async function deserializeWorkflow(
 }
 
 const TEMPLATES_KEY = 'bento-pdf-workflow-templates';
+
+export async function loadSerializedWorkflow(
+  data: SerializedWorkflow,
+  editor: NodeEditor<ClassicScheme>,
+  area: AreaPlugin<ClassicScheme, AreaExtra>
+): Promise<void> {
+  await replaceWorkflowSafely(data, editor, area, createNodeByType,
+    (source: ClassicScheme['Node'], output: string, target: ClassicScheme['Node'], input: string) => new ClassicPreset.Connection(source, output, target, input));
+}
 
 interface StoredTemplates {
   [name: string]: SerializedWorkflow;

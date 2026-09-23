@@ -61,6 +61,7 @@
     <meta name="apple-mobile-web-app-title" content="PDF Workflow" />
 
     <link href="/src/css/styles.css" rel="stylesheet" />
+    <link href="/src/css/trendy-workflow-ai.css" rel="stylesheet" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
     <link
@@ -321,6 +322,15 @@
             <span class="hidden md:inline">Run</span>
           </button>
           <button
+            id="trendy-ai-workflow-button"
+            type="button"
+            class="bg-violet-600 hover:bg-violet-500 text-white font-semibold px-2.5 md:px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-sm transition-colors"
+            title="Create a workflow with AI"
+          >
+            <i class="ph ph-sparkle text-base"></i>
+            <span class="trendy-ai-button-label">Create with AI</span>
+          </button>
+          <button
             id="clear-btn"
             class="bg-gray-700 hover:bg-gray-600 text-white px-2.5 md:px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
           >
@@ -392,6 +402,47 @@
         </div>
         <div id="settings-content" class="flex-1 p-3 space-y-3"></div>
       </aside>
+    </div>
+
+    <div
+      id="trendy-ai-workflow-modal"
+      class="hidden fixed inset-0 z-50 flex items-center justify-center"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+      aria-labelledby="trendy-ai-workflow-title"
+    >
+      <div class="trendy-ai-workflow-card mx-4">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <i class="ph ph-sparkle text-violet-400"></i>
+              <h2 id="trendy-ai-workflow-title" class="text-white font-semibold text-base">Create workflow with AI</h2>
+              <span id="trendy-ai-workflow-provider" class="trendy-ai-workflow-provider">Not configured</span>
+            </div>
+            <p class="text-xs text-gray-400">AI creates a validated linear workflow for review. It never uploads PDFs or presses Run.</p>
+          </div>
+          <button type="button" data-trendy-ai-close class="text-gray-400 hover:text-white p-1" aria-label="Close AI workflow creator"><i class="ph ph-x text-lg"></i></button>
+        </div>
+        <section class="trendy-template-picker" aria-label="Local workflow templates">
+          <label for="trendy-workflow-template">Start from a reviewed template — no AI required</label>
+          <div><select id="trendy-workflow-template" aria-label="Workflow template"></select><button id="trendy-workflow-template-preview" type="button">Preview template</button></div>
+          <p>Templates use the same review, local fields and safe loading. Nothing runs automatically.</p>
+        </section>
+        <label for="trendy-ai-workflow-prompt" class="block text-xs font-medium text-gray-300 mb-1.5">Describe the workflow</label>
+        <textarea id="trendy-ai-workflow-prompt" class="w-full bg-gray-900 border border-gray-600 text-white rounded-lg px-3 py-2.5 text-sm focus:border-violet-500 focus:outline-none placeholder-gray-500" maxlength="4000" placeholder="Example: Merge my PDFs, add page numbers at the bottom center, compress them, and download as final-report.pdf"></textarea>
+        <p class="text-[11px] text-gray-500 mt-1.5">The description is sent to your configured provider. Do not include passwords, API keys, or confidential document content. PDF passwords are collected locally after generation. AI setup is stored under <code>trendytools.ai.v1</code>. Configure it on the <a href="/" class="text-violet-400 hover:text-violet-300">dashboard</a>.</p>
+        <label class="trendy-full-catalog"><input id="trendy-ai-full-catalog" type="checkbox" /> Send full capability details (skip prompt shortlisting)</label>
+        <p id="trendy-ai-selection-status" class="text-xs text-gray-400 mt-2" aria-live="polite"></p>
+        <button id="trendy-ai-retry-full" type="button" class="hidden">Retry with full details — one additional AI request</button>
+        <p id="trendy-ai-workflow-status" class="min-h-5 text-xs text-gray-400 mt-3" role="status" aria-live="polite"></p>
+        <div id="trendy-ai-workflow-review" class="hidden"></div>
+        <div class="flex justify-end gap-2 mt-3">
+          <button id="trendy-ai-workflow-apply" type="button" class="hidden bg-violet-600 text-white px-4 py-2 rounded-lg">Load reviewed workflow</button>
+          <button type="button" data-trendy-ai-close class="bg-gray-700 hover:bg-gray-600 text-gray-200 px-4 py-2 rounded-lg text-sm transition-colors">Cancel</button>
+          <button id="trendy-ai-workflow-create" type="button" class="bg-violet-600 hover:bg-violet-500 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors">Create workflow</button>
+        </div>
+      </div>
     </div>
 
     <!-- Loader Modal -->

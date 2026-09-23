@@ -43,6 +43,7 @@ import {
   templateNameExists,
   deleteTemplate,
 } from '@/js/workflow/serialization';
+import { initializeTrendyWorkflowAI } from '@/js/workflow/trendy-ai';
 import { getAvailableTesseractLanguageEntries } from '@/js/utils/tesseract-language-availability.js';
 import { isToolDisabled } from '@/js/utils/disabled-tools.js';
 import { IMAGE_ACCEPT } from '@/js/utils/image-input-utils.js';
@@ -63,6 +64,8 @@ async function initializePage() {
 
   workflowEditor = await createWorkflowEditor(container);
   const { editor, area, engine } = workflowEditor;
+
+  initializeTrendyWorkflowAI(workflowEditor);
 
   buildToolbox();
 
@@ -1499,7 +1502,7 @@ function showNodeSettings(node: BaseWorkflowNode) {
       wrapper.appendChild(input);
     } else {
       const input = document.createElement('input');
-      const isPasswordField = key === 'password' || key === 'ownerPassword';
+      const isPasswordField = key === 'password' || key === 'ownerPassword' || key === 'userPassword';
       input.type = isPasswordField ? 'password' : 'text';
       input.className = inputClass;
       input.value = currentValue;

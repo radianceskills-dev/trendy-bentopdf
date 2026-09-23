@@ -401,13 +401,11 @@ const init = async () => {
 
         toolCard.append(icon, toolName);
 
-        if (tool.subtitle) {
-          const toolSubtitle = document.createElement('p');
-          toolSubtitle.className = 'text-xs text-gray-400 mt-1 px-2';
-          toolSubtitle.textContent = toolKey
-            ? t(`${toolKey}.subtitle`)
-            : tool.subtitle;
-          toolCard.appendChild(toolSubtitle);
+        if (tool.name === 'PDF Workflow Builder') {
+          const aiBadge = document.createElement('span');
+          aiBadge.className = 'mt-2 rounded-full border border-violet-400/30 bg-violet-500/15 px-2 py-0.5 text-[10px] font-semibold text-violet-300';
+          aiBadge.textContent = 'AI-powered';
+          toolCard.appendChild(aiBadge);
         }
 
         toolsContainer.appendChild(toolCard);
